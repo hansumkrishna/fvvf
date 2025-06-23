@@ -79,10 +79,14 @@ class FileToVideoEncoder:
         flags = 0
         if is_last_frame:
             flags |= 1
+        
+        # Handle special chunk_id for metadata frames (-1 -> 0xFFFFFFFF)
+        if chunk_id == -1:
+            chunk_id = 0xFFFFFFFF
             
         metadata = struct.pack('>IIHHI', 
                               frame_seq,     # 4 bytes: frame sequence number
-                              chunk_id,      # 4 bytes: chunk ID
+                              chunk_id,      # 4 bytes: chunk ID (0xFFFFFFFF for metadata)
                               total_chunks,  # 2 bytes: total chunks
                               flags,         # 2 bytes: flags
                               chunk_size)    # 4 bytes: chunk size
