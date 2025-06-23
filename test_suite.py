@@ -69,7 +69,22 @@ class FileVideoTestSuite:
 
     def run_encoding_test(self, input_file: str, cell_size: int = 8, fps: int = 20) -> str:
         """Run encoding test and return video path"""
-        from file_to_video_encoder import FileToVideoEncoder
+        # Import here to avoid circular imports
+        import sys
+        import os
+        
+        # Add current directory to path for imports
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        if current_dir not in sys.path:
+            sys.path.insert(0, current_dir)
+        
+        try:
+            from file_to_video_encoder import FileToVideoEncoder
+        except ImportError:
+            # Fallback: assume the classes are in the same file or available globally
+            if 'FileToVideoEncoder' not in globals():
+                raise ImportError("FileToVideoEncoder class not available. Make sure file_to_video_encoder.py is in the same directory.")
+            FileToVideoEncoder = globals()['FileToVideoEncoder']
         
         encoder = FileToVideoEncoder(cell_size=cell_size, fps=fps)
         
@@ -81,7 +96,22 @@ class FileVideoTestSuite:
 
     def run_decoding_test(self, video_path: str, cell_size: int = 8) -> str:
         """Run decoding test and return decoded file path"""
-        from video_to_file_decoder import VideoToFileDecoder
+        # Import here to avoid circular imports
+        import sys
+        import os
+        
+        # Add current directory to path for imports
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        if current_dir not in sys.path:
+            sys.path.insert(0, current_dir)
+        
+        try:
+            from video_to_file_decoder import VideoToFileDecoder
+        except ImportError:
+            # Fallback: assume the classes are in the same file or available globally
+            if 'VideoToFileDecoder' not in globals():
+                raise ImportError("VideoToFileDecoder class not available. Make sure video_to_file_decoder.py is in the same directory.")
+            VideoToFileDecoder = globals()['VideoToFileDecoder']
         
         decoder = VideoToFileDecoder(cell_size=cell_size)
         
