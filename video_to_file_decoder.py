@@ -164,6 +164,10 @@ class VideoToFileDecoder:
             metadata_bytes = frame_bytes[:self.metadata_bytes]
             frame_seq, chunk_id, total_chunks, flags, chunk_size = struct.unpack('>IIHHI', metadata_bytes)
             
+            # Handle special chunk_id for metadata frames (0xFFFFFFFF -> -1)
+            if chunk_id == 0xFFFFFFFF:
+                chunk_id = -1
+            
             is_last_frame = bool(flags & 1)
             
             return {
